@@ -1,16 +1,21 @@
-import { Search, ShoppingBag, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRef, useState, type KeyboardEvent } from "react";
-import { useSearchParams } from "react-router";
+import { useRef, type KeyboardEvent } from "react";
+import { Link, useParams, useSearchParams } from "react-router";
+import { cn } from "@/lib/utils";
 
 export const Header = () => {
 
-    const [cartCount] = useState(3);
+    // const [cartCount] = useState(3);
     const [searchParams, setSearchParams] = useSearchParams();
     const inputRef = useRef<HTMLInputElement>(null);
 
+
     const query = searchParams.get('query') || '';
+
+    const { gender } = useParams();
+
 
     const handleSearch = (event: KeyboardEvent) => {
         if (event.key !== 'Enter') return;
@@ -39,18 +44,19 @@ export const Header = () => {
 
                 {/* Navigation - Desktop */}
                 <nav className="hidden md:flex items-center space-x-8">
-                    <a href="#" className="text-sm font-medium transition-colors hover:text-primary">
-                        Camisetas
-                    </a>
-                    <a href="#" className="text-sm font-medium transition-colors hover:text-primary">
-                        Sudaderas
-                    </a>
-                    <a href="#" className="text-sm font-medium transition-colors hover:text-primary">
-                        Chaquetas
-                    </a>
-                    <a href="#" className="text-sm font-medium transition-colors hover:text-primary">
-                        Accesorios
-                    </a>
+                    <Link to={"/"} className={cn("text-sm font-medium transition-colors hover:text-primary", !gender ? "underline underline-offset-4" : '')}>
+                        All
+                    </Link>
+                    <Link to="/gender/men" className={cn("text-sm font-medium transition-colors hover:text-primary", gender === 'men' ? "underline underline-offset-4" : '')}>
+                        Men
+                    </Link>
+                    <Link to="/gender/women" className={cn("text-sm font-medium transition-colors hover:text-primary", gender === 'women' ? "underline underline-offset-4" : '')}>
+                        Women
+                    </Link>
+                    <Link to="/gender/kids" className={cn("text-sm font-medium transition-colors hover:text-primary", gender === 'kids' ? "underline underline-offset-4" : '')}>
+                        Kids
+                    </Link>
+
                 </nav>
 
                 {/* Search and Cart */}
@@ -71,12 +77,32 @@ export const Header = () => {
                         <Search className="h-5 w-5" />
                     </Button>
 
-                    <Button variant="ghost" size="icon" className="relative">
+                    <Link to={'/auth/login'}>
+                        <Button
+                            variant={'default'}
+                            size={"sm"}
+                            className="ml-2"
+                        >
+                            Login
+                        </Button>
+                    </Link>
+
+                    <Link to={'/admin'}>
+                        <Button
+                            variant={'destructive'}
+                            size={"sm"}
+                            className="ml-2"
+                        >
+                            Admin
+                        </Button>
+                    </Link>
+
+                    {/* <Button variant="ghost" size="icon" className="relative">
                         <ShoppingBag className="h-5 w-5" />
                         {cartCount > 0 && <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
                             {cartCount}
                         </span>}
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
         </div>
