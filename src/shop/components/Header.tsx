@@ -1,9 +1,10 @@
-import { Search, Menu } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRef, type KeyboardEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { cn } from "@/lib/utils";
+import { CustomLogo } from "@/components/custom/CustomLogo";
 
 export const Header = () => {
 
@@ -35,12 +36,7 @@ export const Header = () => {
         <div className="container mx-auto px-4 lg:px-8">
             <div className="flex h-16 items-center justify-between">
                 {/* Logo */}
-                <div className="flex items-center space-x-4">
-                    <Button variant="ghost" size="icon" className="md:hidden">
-                        <Menu className="h-5 w-5" />
-                    </Button>
-                    <h1 className="text-xl font-semibold tracking-tight">TESLA STYLE</h1>
-                </div>
+                <CustomLogo />
 
                 {/* Navigation - Desktop */}
                 <nav className="hidden md:flex items-center space-x-8">
@@ -61,7 +57,7 @@ export const Header = () => {
 
                 {/* Search and Cart */}
                 <div className="flex items-center space-x-4">
-                    <div className="hidden md:flex items-center space-x-2">
+                    <div className="hidden md:flex md:m-2 items-center space-x-2">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
@@ -81,7 +77,7 @@ export const Header = () => {
                         <Button
                             variant={'default'}
                             size={"sm"}
-                            className="ml-2"
+                            className=""
                         >
                             Login
                         </Button>
@@ -91,7 +87,7 @@ export const Header = () => {
                         <Button
                             variant={'destructive'}
                             size={"sm"}
-                            className="ml-2"
+                            className=""
                         >
                             Admin
                         </Button>
