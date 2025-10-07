@@ -1,14 +1,16 @@
 import { CustomPagination } from "@/components/custom/CustomPagination"
-import { products } from "@/data/products.data"
 import { CustomHeadSection } from "@/shop/components/CustomHeadSection"
 import { ProductGrid } from "@/shop/components/ProductGrid"
+import { useProducts } from "@/shop/hooks/useProducts"
 
 export const HomePage = () => {
+    const { data } = useProducts();
+    console.log(data);
     return (
         <div>
             <CustomHeadSection title="Todos los productos" />
-            <ProductGrid products={products} />
-            <CustomPagination totalPages={5} />
+            <ProductGrid products={data?.products || []} />
+            <CustomPagination totalPages={data?.pages || 0} />
         </div>
     )
 }
