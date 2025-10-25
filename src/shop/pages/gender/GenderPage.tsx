@@ -13,7 +13,7 @@ export const GenderPage = () => {
         <>
             <CustomHeadSection title={genderLabel} />
             <ProductGrid products={data?.products || []} />
-            <CustomPagination totalPages={data?.pages || 0} />
+            <CustomPagination totalPages={data?.pages || 1} />
         </>
     )
 }

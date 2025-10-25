@@ -105,8 +105,8 @@ export const AdminProductPage = () => {
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        const files = e.dataTransfer.files;
-        console.log(files);
+        // const files = e.dataTransfer.files;
+        // console.log(files);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,7 +216,7 @@ export const AdminProductPage = () => {
                                         <option value="men">Men</option>
                                         <option value="women">Women</option>
                                         <option value="unisex">Unisex</option>
-                                        <option value="kids">Kids</option>
+                                        <option value="kid">Kids</option>
                                     </select>
                                 </div>
 

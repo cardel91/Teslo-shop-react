@@ -16,12 +16,6 @@ export interface Product {
 
 export type Gender = 'kid' | 'men' | 'women' | 'all';
 
-
-export enum Tag {
-    Shirt = "shirt",
-    Hats = "hats"
-}
-
 export type Size =
     "XS" |
     "S" |

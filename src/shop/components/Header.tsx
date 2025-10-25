@@ -49,7 +49,7 @@ export const Header = () => {
                     <Link to="/gender/women" className={cn("text-sm font-medium transition-colors hover:text-primary", gender === 'women' ? "underline underline-offset-4" : '')}>
                         Women
                     </Link>
-                    <Link to="/gender/kids" className={cn("text-sm font-medium transition-colors hover:text-primary", gender === 'kids' ? "underline underline-offset-4" : '')}>
+                    <Link to="/gender/kid" className={cn("text-sm font-medium transition-colors hover:text-primary", gender === 'kids' ? "underline underline-offset-4" : '')}>
                         Kids
                     </Link>
 
