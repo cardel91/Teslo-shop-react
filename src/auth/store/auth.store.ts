@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { loginAction } from '../actions/login.action';
 import type { User } from '@/interfaces/user.interface';
+import { checkAuthAction } from '../actions/check-auth.action';
 
 // type Store = {
 //     count: number
@@ -26,19 +27,25 @@ type AuthState = {
     token: string | null;
     authStatus: AuthStatus;
 
-    // gets
-    // isAdmin: boolean;
+    // getters
+    isAdmin: () => boolean;
 
     // actions
     login: (email: string, password: string) => Promise<boolean>;
-    logout: () => void
+    logout: () => void,
+    checkAuthStatus: () => Promise<boolean>
 
 };
 
-export const useAuthStore = create<AuthState>()((set) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
     user: null,
     token: null,
     authStatus: 'checking',
+
+    isAdmin: () => {
+        const roles = get().user?.roles || [];
+        return roles.includes('admin');
+    },
 
     login: async (email: string, password: string) => {
         console.log({ email, password });
@@ -46,20 +53,39 @@ export const useAuthStore = create<AuthState>()((set) => ({
             const data = await loginAction(email, password);
             console.log({ data });
             localStorage.setItem('token', data.token);
-            set({ user: data.user, token: data.token });
+            set({ user: data.user, token: data.token, authStatus: "auth" });
             return true;
 
         } catch {
             localStorage.removeItem('token');
-            set({ user: null, token: null });
+            set({ user: null, token: null, authStatus: 'not-auth' });
             return false;
 
         }
     },
     logout: () => {
         localStorage.removeItem('token');
-        set({ user: null, token: null });
+        set({ user: null, token: null, authStatus: "not-auth" });
 
+    },
+    checkAuthStatus: async () => {
+        try {
+            const { user, token } = await checkAuthAction();
+            set({
+                user,
+                token,
+                authStatus: 'auth'
+            });
+            return true;
+
+        } catch {
+            set({
+                user: undefined,
+                token: undefined,
+                authStatus: 'not-auth'
+            });
+            return false;
+        }
     }
 
 

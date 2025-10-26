@@ -13,7 +13,7 @@ export const Header = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const { user, logout } = useAuthStore();
+    const { authStatus, isAdmin, logout } = useAuthStore();
 
     const query = searchParams.get('query') || '';
 
@@ -75,7 +75,7 @@ export const Header = () => {
                         <Search className="h-5 w-5" />
                     </Button>
 
-                    {!user ? (
+                    {authStatus === 'not-auth' ? (
 
                         <Link to={'/auth/login'}>
                             <Button
@@ -94,16 +94,19 @@ export const Header = () => {
                             className=""
                         >Logout</Button>
                     )}
-
-                    <Link to={'/admin'}>
-                        <Button
-                            variant={'destructive'}
-                            size={"sm"}
-                            className=""
-                        >
-                            Admin
-                        </Button>
-                    </Link>
+                    {
+                        isAdmin() && (
+                            <Link to={'/admin'}>
+                                <Button
+                                    variant={'destructive'}
+                                    size={"sm"}
+                                    className=""
+                                >
+                                    Admin
+                                </Button>
+                            </Link>
+                        )
+                    }
 
                     {/* <Button variant="ghost" size="icon" className="relative">
                         <ShoppingBag className="h-5 w-5" />
