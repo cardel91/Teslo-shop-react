@@ -3,14 +3,49 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CustomLogo } from "@/components/custom/CustomLogo"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
+import { useAuthStore } from "@/auth/store/auth.store"
+import { useState, type FormEvent } from "react"
+import { toast } from "sonner"
 
 export const RegisterPage = () => {
+
+    const navigate = useNavigate();
+    const { register } = useAuthStore()
+    const [isPosting, setIsPosting] = useState(false);
+
+    const handleSignin = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsPosting(true);
+        const formData = new FormData(event.target as HTMLFormElement);
+        const fullName = formData.get('fullName') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const confirmPassword = formData.get('confirmPassword') as string;
+
+        if (password !== confirmPassword) {
+            toast.error("Password mismatch");
+            setIsPosting(false)
+            return;
+        }
+
+        // console.log({ email, password });
+
+        const success = await register(email, password, fullName);
+        if (success) {
+            navigate('/');
+            return;
+        }
+
+
+        setIsPosting(false);
+
+    }
     return (
         <div className={"flex flex-col gap-6"}>
             <Card className="overflow-hidden p-0" >
                 <CardContent className="grid p-0 md:grid-cols-2">
-                    <form className="p-6 md:p-8">
+                    <form className="p-6 md:p-8" onSubmit={handleSignin}>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-center text-center">
                                 <CustomLogo />
@@ -18,31 +53,25 @@ export const RegisterPage = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Full name</Label>
-                                <Input id="name" type="name" placeholder="User Name" required />
+                                <Input id="name" type="name" name="fullName" placeholder="User Name" required />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" placeholder="user@domain.com" required />
+                                <Input id="email" type="email" name="email" placeholder="user@domain.com" required />
                             </div>
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
-                                    {/* <a href="#" className="ml-auto text-sm underline-offset-2 hover:underline">
-                                        Forgot your password?
-                                    </a> */}
                                 </div>
-                                <Input id="password" placeholder="Password" type="password" required />
+                                <Input id="password" name="password" placeholder="Password" type="password" required />
                             </div>
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Confirm password</Label>
-                                    {/* <a href="#" className="ml-auto text-sm underline-offset-2 hover:underline">
-                                        Forgot your password?
-                                    </a> */}
                                 </div>
-                                <Input id="confirmPassword" placeholder="Confirm password" type="password" required />
+                                <Input id="confirmPassword" name="confirmPassword" placeholder="Confirm password" type="password" required />
                             </div>
-                            <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full" disabled={isPosting}>
                                 Register
                             </Button>
                             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">

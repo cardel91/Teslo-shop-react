@@ -2,6 +2,9 @@ import { create } from 'zustand'
 import { loginAction } from '../actions/login.action';
 import type { User } from '@/interfaces/user.interface';
 import { checkAuthAction } from '../actions/check-auth.action';
+import { registerAction } from '../actions/register.action';
+import { toast } from 'sonner';
+import type { CustomAxiosError } from '@/interfaces/axios.interface';
 
 // type Store = {
 //     count: number
@@ -31,6 +34,7 @@ type AuthState = {
     isAdmin: () => boolean;
 
     // actions
+    register: (email: string, password: string, fullName: string) => Promise<boolean>;
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => void,
     checkAuthStatus: () => Promise<boolean>
@@ -47,8 +51,24 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         return roles.includes('admin');
     },
 
+    register: async (email: string, password: string, fullName: string) => {
+        try {
+            const data = await registerAction(email, password, fullName);
+            localStorage.setItem('token', data.token);
+            set({ user: data.user, token: data.token, authStatus: "auth" });
+            return true;
+        } catch (error) {
+            const { response } = error as CustomAxiosError;
+            [...(Array.isArray(response.data.message) ? response.data.message : [response.data.message])]
+                .forEach((element) => toast.error(element));
+            localStorage.removeItem('token');
+            set({ user: null, token: null, authStatus: 'not-auth' });
+            return false;
+        }
+    },
+
     login: async (email: string, password: string) => {
-        console.log({ email, password });
+        // console.log({ email, password });
         try {
             const data = await loginAction(email, password);
             console.log({ data });
@@ -56,7 +76,10 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
             set({ user: data.user, token: data.token, authStatus: "auth" });
             return true;
 
-        } catch {
+        } catch (error) {
+            const { response } = error as CustomAxiosError;
+            [...(Array.isArray(response.data.message) ? response.data.message : [response.data.message])]
+                .forEach((element) => toast.error(element));
             localStorage.removeItem('token');
             set({ user: null, token: null, authStatus: 'not-auth' });
             return false;
