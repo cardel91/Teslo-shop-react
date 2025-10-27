@@ -1,10 +1,5 @@
-import { Eye, BarChart3 } from "lucide-react";
 import { useState } from "react";
-import ActivityFeed from "../components/ActivityFeed";
-import Chart from "../components/Chart";
 import AdminHeader from "../components/AdminHeader";
-import QuickActions from "../components/QuickActions";
-import StatCard from "../components/StatCard";
 import AdminSidebar from "../components/AdminSidebar";
 import { Outlet } from "react-router";
 import { AdminTitle } from "../components/AdminTitle";
