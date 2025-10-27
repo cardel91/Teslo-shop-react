@@ -23,7 +23,7 @@ export const AdminProductPage = () => {
     const handleSubmit = async (partialProduct: Partial<Product>) => {
         await mutation.mutateAsync(partialProduct, {
             onSuccess: (data) => {
-                toast.success('Product updated')
+                toast.success(id === 'new' ? 'Product added' : 'Product updated')
                 navigate(`/admin/products/${data.id}`)
             },
             onError: (error) => {
@@ -44,5 +44,5 @@ export const AdminProductPage = () => {
     if (!product) return <Navigate to={'/admin/products'} />
 
 
-    return <ProductForm title={title} subtitle={subtitle} product={product} onSubmit={handleSubmit} />
+    return <ProductForm title={title} subtitle={subtitle} product={product} onSubmit={handleSubmit} isPending={mutation.isPending} />
 };

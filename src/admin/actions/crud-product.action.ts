@@ -16,7 +16,7 @@ export const crudProductAction = async (partialProduct: Partial<Product>): Promi
         data: rest
     });
 
-    await sleep(5000);
+    await sleep();
 
     return {
         ...data,

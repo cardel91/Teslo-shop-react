@@ -13,11 +13,12 @@ interface Props {
     product: Product;
 
     onSubmit: (productLike: Partial<Product>) => Promise<void>;
+    isPending: boolean;
 }
 
 const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL'];
 
-export const ProductForm = ({ title, subtitle, product, onSubmit }: Props) => {
+export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: Props) => {
 
     const [dragActive, setDragActive] = useState(false);
 
@@ -32,10 +33,6 @@ export const ProductForm = ({ title, subtitle, product, onSubmit }: Props) => {
     const currentStock = watch('stock');
 
     const labelInputRef = useRef<HTMLInputElement>(null)
-
-    const handleInputChange = (field: keyof Product, value: string | number) => {
-        // setProduct((prev) => ({ ...prev, [field]: value }));
-    };
 
     const addTag = () => {
         const newTag = labelInputRef.current!.value;
@@ -104,14 +101,14 @@ export const ProductForm = ({ title, subtitle, product, onSubmit }: Props) => {
             <div className="flex justify-between items-center">
                 <AdminTitle title={title} subtitle={subtitle} />
                 <div className="flex justify-end mb-10 gap-4">
-                    <Button variant="outline">
+                    <Button variant="outline" type="button" >
                         <Link to="/admin/products" className="flex items-center gap-2">
                             <X className="w-4 h-4" />
                             Cancel
                         </Link>
                     </Button>
 
-                    <Button type="submit">
+                    <Button type="submit" disabled={isPending}>
                         <SaveAll className="w-4 h-4" />
                         Save changes
                     </Button>
@@ -221,14 +218,11 @@ export const ProductForm = ({ title, subtitle, product, onSubmit }: Props) => {
                                     </label>
                                     <select
                                         {...register('gender')}
-                                        onChange={(e) =>
-                                            handleInputChange('gender', e.target.value)
-                                        }
                                         className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                     >
                                         <option value="men">Men</option>
                                         <option value="women">Women</option>
-                                        <option value="all">All</option>
+                                        <option value="unisex">All</option>
                                         <option value="kid">Kids</option>
                                     </select>
                                 </div>
@@ -239,9 +233,6 @@ export const ProductForm = ({ title, subtitle, product, onSubmit }: Props) => {
                                     </label>
                                     <textarea
                                         {...register('description', { required: true })}
-                                        onChange={(e) =>
-                                            handleInputChange('description', e.target.value)
-                                        }
                                         rows={5}
                                         className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                                         placeholder="Product description"
