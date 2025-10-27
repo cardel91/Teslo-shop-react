@@ -1,7 +1,7 @@
 import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
-import { X, SaveAll, Tag, Plus, Upload } from "lucide-react";
+import { X, SaveAll, Tag, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "react-router";
 import { useForm } from 'react-hook-form'
@@ -11,11 +11,13 @@ interface Props {
     title: string;
     subtitle: string;
     product: Product;
+
+    onSubmit: (productLike: Partial<Product>) => Promise<void>;
 }
 
 const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL'];
 
-export const ProductForm = ({ title, subtitle, product }: Props) => {
+export const ProductForm = ({ title, subtitle, product, onSubmit }: Props) => {
 
     const [dragActive, setDragActive] = useState(false);
 
@@ -31,9 +33,9 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
 
     const labelInputRef = useRef<HTMLInputElement>(null)
 
-    // const handleInputChange = (field: keyof Product, value: string | number) => {
-    //     setProduct((prev) => ({ ...prev, [field]: value }));
-    // };
+    const handleInputChange = (field: keyof Product, value: string | number) => {
+        // setProduct((prev) => ({ ...prev, [field]: value }));
+    };
 
     const addTag = () => {
         const newTag = labelInputRef.current!.value;
@@ -96,9 +98,6 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
 
     // TODO: delete
 
-    const onSubmit = (productLike: Product) => {
-        console.log('onSubmit', product);
-    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -222,9 +221,9 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                                     </label>
                                     <select
                                         {...register('gender')}
-                                        // onChange={(e) =>
-                                        //     handleInputChange('gender', e.target.value)
-                                        // }
+                                        onChange={(e) =>
+                                            handleInputChange('gender', e.target.value)
+                                        }
                                         className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                     >
                                         <option value="men">Men</option>
@@ -240,9 +239,9 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                                     </label>
                                     <textarea
                                         {...register('description', { required: true })}
-                                        // onChange={(e) =>
-                                        //     handleInputChange('description', e.target.value)
-                                        // }
+                                        onChange={(e) =>
+                                            handleInputChange('description', e.target.value)
+                                        }
                                         rows={5}
                                         className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                                         placeholder="Product description"
@@ -366,17 +365,17 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                                     ? 'border-blue-400 bg-blue-50'
                                     : 'border-slate-300 hover:border-slate-400'
                                     }`}
-                            // onDragEnter={handleDrag}
-                            // onDragLeave={handleDrag}
-                            // onDragOver={handleDrag}
-                            // onDrop={handleDrop}
+                                onDragEnter={handleDrag}
+                                onDragLeave={handleDrag}
+                                onDragOver={handleDrag}
+                                onDrop={handleDrop}
                             >
                                 <input
                                     type="file"
                                     multiple
                                     accept="image/*"
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                // onChange={handleFileChange}
+                                    onChange={handleFileChange}
                                 />
                                 <div className="space-y-4">
                                     <Upload className="mx-auto h-12 w-12 text-slate-400" />

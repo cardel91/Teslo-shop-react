@@ -9,7 +9,7 @@ import { ProductForm } from './ui/ProductForm';
 
 export const AdminProductPage = () => {
     const { id } = useParams();
-    const { isLoading, isError, data: product } = useProduct(id || '');
+    const { isLoading, isError, data: product, handleSubmitForm } = useProduct(id || '');
     console.log({ isLoading, product });
 
     const title = id === 'new' ? 'New product' : 'Edit product';
@@ -30,5 +30,5 @@ export const AdminProductPage = () => {
     if (!product) return <Navigate to={'/admin/products'} />
 
 
-    return <ProductForm title={title} subtitle={subtitle} product={product} />
+    return <ProductForm title={title} subtitle={subtitle} product={product} onSubmit={handleSubmitForm} />
 };
