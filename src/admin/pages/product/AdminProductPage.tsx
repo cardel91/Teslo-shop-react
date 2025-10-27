@@ -1,16 +1,18 @@
 // https://github.com/Klerith/bolt-product-editor
 
-import { Navigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 import { useProduct } from '@/admin/hooks/useProduct';
 import { FullScreenLoading } from '@/components/custom/FullScreenLoading';
 import { ProductForm } from './ui/ProductForm';
+import type { Product } from '@/interfaces/product.interface';
+import { toast } from 'sonner';
 
 
 
 export const AdminProductPage = () => {
     const { id } = useParams();
-    const { isLoading, isError, data: product, handleSubmitForm } = useProduct(id || '');
-    console.log({ isLoading, product });
+    const navigate = useNavigate();
+    const { isLoading, isError, data: product, mutation } = useProduct(id || '');
 
     const title = id === 'new' ? 'New product' : 'Edit product';
     const subtitle =
@@ -18,6 +20,18 @@ export const AdminProductPage = () => {
             ? 'Here you can create a new product.'
             : 'Here you can edit the product.';
 
+    const handleSubmit = async (partialProduct: Partial<Product>) => {
+        await mutation.mutateAsync(partialProduct, {
+            onSuccess: (data) => {
+                toast.success('Product updated')
+                navigate(`/admin/products/${data.id}`)
+            },
+            onError: (error) => {
+                console.log(error);
+                toast.error('Failed');
+            }
+        });
+    }
 
     if (isError) {
         return <Navigate to='/admin/products' />
@@ -30,5 +44,5 @@ export const AdminProductPage = () => {
     if (!product) return <Navigate to={'/admin/products'} />
 
 
-    return <ProductForm title={title} subtitle={subtitle} product={product} onSubmit={handleSubmitForm} />
+    return <ProductForm title={title} subtitle={subtitle} product={product} onSubmit={handleSubmit} />
 };

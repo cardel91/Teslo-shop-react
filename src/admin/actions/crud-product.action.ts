@@ -1,8 +1,10 @@
 import { tesloApi } from "@/api/tesloApi";
 import type { Product } from "@/interfaces/product.interface"
+import { sleep } from "@/lib/sleep";
 
 export const crudProductAction = async (partialProduct: Partial<Product>): Promise<Product> => {
-    const { id, ...rest } = partialProduct;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, user, images = [], ...rest } = partialProduct;
     const isCreating = id === 'new';
 
     rest.stock = Number(rest.stock || 0);
@@ -14,6 +16,7 @@ export const crudProductAction = async (partialProduct: Partial<Product>): Promi
         data: rest
     });
 
+    await sleep(5000);
 
     return {
         ...data,
