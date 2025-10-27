@@ -20,7 +20,7 @@ export const AdminProductPage = () => {
             ? 'Here you can create a new product.'
             : 'Here you can edit the product.';
 
-    const handleSubmit = async (partialProduct: Partial<Product>) => {
+    const handleSubmit = async (partialProduct: Partial<Product> & { file?: File[] }) => {
         await mutation.mutateAsync(partialProduct, {
             onSuccess: (data) => {
                 toast.success(id === 'new' ? 'Product added' : 'Product updated')

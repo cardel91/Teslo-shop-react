@@ -2,7 +2,7 @@ import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
 import { X, SaveAll, Tag, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useForm } from 'react-hook-form'
 import { cn } from "@/lib/utils";
@@ -12,8 +12,12 @@ interface Props {
     subtitle: string;
     product: Product;
 
-    onSubmit: (productLike: Partial<Product>) => Promise<void>;
+    onSubmit: (productLike: Partial<Product> & { files?: File[] }) => Promise<void>;
     isPending: boolean;
+}
+
+interface FormInputs extends Product {
+    files?: File[];
 }
 
 const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL'];
@@ -24,16 +28,21 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue,
         watch
-    } = useForm({
+    } = useForm<FormInputs>({
         defaultValues: product
     })
 
     const selectedSizes = watch('sizes');
     const selectedTags = watch('tags');
     const currentStock = watch('stock');
+    // const files = watch('files');
 
     const labelInputRef = useRef<HTMLInputElement>(null);
     const [files, setFiles] = useState<File[]>([]);
+
+    useEffect(() => {
+        setFiles([]);
+    }, [product]);
 
 
     const addTag = () => {
@@ -91,6 +100,8 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
         if (!files) return;
 
         setFiles((prev) => [...prev, ...Array.from(files)])
+        const currentFiles = getValues('files') || [];
+        setValue('files', [...currentFiles, ...Array.from(files)]);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +109,8 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
         if (!files) return;
 
         setFiles((prev) => [...prev, ...Array.from(files)]);
+        const currentFiles = getValues('files') || [];
+        setValue('files', [...currentFiles, ...Array.from(files)]);
     };
 
     // TODO: delete
